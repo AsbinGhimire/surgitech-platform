@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Home - Surgitech{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to Surgitech</h1>
+        <p>Premium solutions for surgical and medical needs.</p>
+        <a href="{% url 'products:list' %}" class="btn-primary">Browse Products</a>
+    </div>
+</section>
+{% endblock %}
