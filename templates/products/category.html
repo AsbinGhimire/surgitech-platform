@@ -10,7 +10,7 @@
 {% block content %}
 <div class="page-container">
     <div class="category-header">
-        <h1>{{ category.name }}</h1>
+        <h1>{% if category.icon %}<i class="{{ category.icon }}"></i> {% endif %}{{ category.name }}</h1>
         <nav class="breadcrumb">
             <a href="{% url 'products:product_list' %}">Products</a> &raquo; {{ category.name }}
         </nav>

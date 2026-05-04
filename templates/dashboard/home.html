@@ -1,0 +1,92 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Dashboard Home — Surgitech{% endblock %}
+{% block nav_home %}active{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="fa-solid fa-layer-group"></i></div>
+    <div>
+      <div class="stat-label">Total Categories</div>
+      <div class="stat-value">{{ total_categories }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple"><i class="fa-solid fa-boxes-stacked"></i></div>
+    <div>
+      <div class="stat-label">Total Products</div>
+      <div class="stat-value">{{ total_products }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green"><i class="fa-solid fa-star"></i></div>
+    <div>
+      <div class="stat-label">Featured</div>
+      <div class="stat-value">{{ featured_count }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div style="display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;">
+  <a href="{% url 'dashboard:category_add' %}" class="btn btn-primary">
+    <i class="fa-solid fa-folder-plus"></i> Add Category
+  </a>
+  <a href="{% url 'dashboard:product_add' %}" class="btn btn-primary">
+    <i class="fa-solid fa-circle-plus"></i> Add Product
+  </a>
+  <a href="{% url 'dashboard:product_list' %}" class="btn btn-ghost">
+    <i class="fa-solid fa-list"></i> All Products
+  </a>
+</div>
+
+<!-- Recent Products -->
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <h2 style="font-size:16px;font-weight:600;">Recent Products</h2>
+    <a href="{% url 'dashboard:product_list' %}" style="font-size:13px;color:var(--accent);text-decoration:none;">View all →</a>
+  </div>
+  <div class="product-cards">
+    {% for p in recent_products %}
+    <a href="{% url 'dashboard:product_edit' p.pk %}" style="text-decoration:none;">
+      <div class="product-mini-card">
+        {% if p.main_image %}
+          <img src="{{ p.main_image.url }}" alt="{{ p.name }}" />
+        {% else %}
+          <div class="no-img"><i class="fa-solid fa-image"></i></div>
+        {% endif %}
+        <div>
+          <div class="pmc-name">{{ p.name|truncatechars:32 }}</div>
+          <div class="pmc-cat">{{ p.category.name }}</div>
+        </div>
+      </div>
+    </a>
+    {% empty %}
+    <p style="color:var(--muted);font-size:14px;">No products yet. <a href="{% url 'dashboard:product_add' %}" style="color:var(--accent);">Add one →</a></p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Categories Overview -->
+<div class="card" style="margin-top:20px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <h2 style="font-size:16px;font-weight:600;">Categories</h2>
+    <a href="{% url 'dashboard:category_list' %}" style="font-size:13px;color:var(--accent);text-decoration:none;">Manage →</a>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    {% for cat in categories %}
+    <a href="{% url 'dashboard:category_edit' cat.pk %}" style="text-decoration:none;">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:8px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <i class="{{ cat.icon }}" style="color:var(--accent);font-size:14px;"></i>
+        <span style="font-size:13px;font-weight:500;">{{ cat.name }}</span>
+        <span class="badge badge-blue">{{ cat.products.count }}</span>
+      </div>
+    </a>
+    {% empty %}
+    <p style="color:var(--muted);font-size:14px;">No categories yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

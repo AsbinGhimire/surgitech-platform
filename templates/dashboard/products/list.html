@@ -1,0 +1,103 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Products — Surgitech Dashboard{% endblock %}
+{% block nav_prod %}active{% endblock %}
+{% block topbar_title %}Products{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Products</h1>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <form method="get" style="position:relative;display:flex;align-items:center;">
+      <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:12px;color:var(--muted);font-size:12px;"></i>
+      <input type="text" name="q" value="{{ q|default:'' }}" placeholder="Search products..." 
+             style="padding:8px 12px 8px 32px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;width:240px;">
+      {% if q %}
+        <a href="{% url 'dashboard:product_list' %}" style="position:absolute;right:10px;color:var(--muted);"><i class="fa-solid fa-circle-xmark"></i></a>
+      {% endif %}
+    </form>
+    <a href="{% url 'dashboard:product_add' %}" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i> Add Product
+    </a>
+  </div>
+</div>
+
+<!-- Category filter chips -->
+<div class="filter-bar">
+  <a href="{% url 'dashboard:product_list' %}" class="filter-chip {% if not selected_cat %}active{% endif %}">
+    All
+  </a>
+  {% for cat in categories %}
+  <a href="{% url 'dashboard:product_list' %}?category={{ cat.pk }}"
+     class="filter-chip {% if selected_cat == cat.pk %}active{% endif %}">
+    <i class="{{ cat.icon }}"></i> {{ cat.name }}
+    <span style="margin-left:4px;font-size:11px;opacity:.7;">({{ cat.products.count }})</span>
+  </a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Brand</th>
+          <th>Price</th>
+          <th>Featured</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>
+            {% if p.main_image %}
+              <img src="{{ p.main_image.url }}" alt="{{ p.name }}" class="product-thumb" />
+            {% else %}
+              <div class="product-thumb-placeholder"><i class="fa-solid fa-image"></i></div>
+            {% endif %}
+          </td>
+          <td style="font-weight:600;max-width:200px;">{{ p.name|truncatechars:40 }}</td>
+          <td>
+            <span class="badge badge-blue">{{ p.category.name }}</span>
+          </td>
+          <td style="color:var(--muted);font-size:13px;">{{ p.brand|default:"—" }}</td>
+          <td style="font-weight:600;">
+            {% if p.price %}${{ p.price }}{% else %}<span style="color:var(--muted);">—</span>{% endif %}
+          </td>
+          <td>
+            {% if p.is_featured %}
+              <span class="badge badge-green"><i class="fa-solid fa-star"></i> Yes</span>
+            {% else %}
+              <span class="badge badge-muted">No</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:8px;">
+              <a href="{{ p.get_absolute_url }}" target="_blank" class="btn btn-ghost btn-sm" title="View on Site">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <a href="{% url 'dashboard:product_edit' p.pk %}" class="btn btn-ghost btn-sm">
+                <i class="fa-solid fa-pen"></i> Edit
+              </a>
+              <a href="{% url 'dashboard:product_delete' p.pk %}" class="btn btn-danger-outline btn-sm">
+                <i class="fa-solid fa-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">
+            <i class="fa-solid fa-inbox" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+            No products found. <a href="{% url 'dashboard:product_add' %}" style="color:var(--accent);">Add one →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,6 +1,11 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Home - Surgitech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+{% endblock %}
 
 {% block content %}
 <section class="hero">
@@ -8,6 +13,98 @@
         <h1>Welcome to Surgitech</h1>
         <p>Premium solutions for surgical and medical needs.</p>
         <a href="{% url 'products:product_list' %}" class="btn-primary">Browse Products</a>
+    </div>
+</section>
+<section class="categories-section" style="padding: 5rem 0; background: #f8fafc;">
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+        <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+            <span class="pill-badge">OUR CATALOG</span>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--primary-color);">Shop by Category</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Explore our specialized medical equipment by department.</p>
+        </div>
+        
+        <div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">
+            {% for cat in categories %}
+            <a href="{{ cat.get_absolute_url }}" class="category-card-home" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 2.5rem 1.5rem; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.3s ease; text-align: center;">
+                <div class="cat-icon-wrap" style="width: 70px; height: 70px; background: rgba(2, 132, 199, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; color: var(--secondary-color); font-size: 1.8rem; transition: all 0.3s ease;">
+                    <i class="{{ cat.icon|default:'fa-solid fa-box' }}"></i>
+                </div>
+                <h3 style="font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 600; color: #1e293b;">{{ cat.name }}</h3>
+                <span style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">{{ cat.products.count }} Products</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+.category-card-home:hover {
+    transform: translateY(-8px);
+    border-color: var(--secondary-color) !important;
+    box-shadow: 0 12px 25px rgba(2, 132, 199, 0.1);
+}
+.category-card-home:hover .cat-icon-wrap {
+    background: var(--secondary-color) !important;
+    color: #fff !important;
+}
+</style>
+
+<section class="featured-products-section">
+    <div class="section-header-inline">
+        <div class="section-title-wrap">
+            <span class="pill-badge">CLINICAL EXCELLENCE</span>
+            <h2>Featured Medical Supplies</h2>
+            <p class="subtitle">Premium equipment trusted by healthcare professionals worldwide.</p>
+        </div>
+        <a href="{% url 'products:product_list' %}" class="btn-outline-pill">View All Products &rarr;</a>
+    </div>
+    
+    <div class="product-grid premium-grid">
+        {% for product in featured_products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <div class="card-badges">
+                        {% if product.discount_percent %}
+                        <span class="badge-discount">-{{ product.discount_percent }}%</span>
+                        {% endif %}
+                        {% if product.badge %}
+                        <span class="badge-special {{ product.badge|lower }}">{{ product.badge }}</span>
+                        {% endif %}
+                    </div>
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.jpg' %}" alt="No Image">
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <span class="brand-name">{{ product.brand|default:"CONTEC" }}</span>
+                    <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                    
+                    <div class="rating-box">
+                        <span class="stars">
+                            ★ ★ ★ ★ ★
+                        </span>
+                        <span class="review-count">({{ product.review_count|default:"12" }})</span>
+                    </div>
+
+                    <div class="price-box">
+                        <span class="current-price">
+                            {% if product.price %}Rs.{{ product.price|floatformat:"0" }}{% else %}Price on Request{% endif %}
+                        </span>
+                        {% if product.old_price %}
+                        <span class="old-price">Rs.{{ product.old_price|floatformat:"0" }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <button class="btn-add-cart">Add to Cart</button>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <h3>No Featured Products</h3>
+            </div>
+        {% endfor %}
     </div>
 </section>
 {% endblock %}

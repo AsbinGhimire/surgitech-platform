@@ -1,0 +1,63 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }} — Surgitech Dashboard{% endblock %}
+{% block nav_cat %}active{% endblock %}
+{% block topbar_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ title }}</h1>
+  <a href="{% url 'dashboard:category_list' %}" class="btn btn-ghost">
+    <i class="fa-solid fa-arrow-left"></i> Back to Categories
+  </a>
+</div>
+
+<div class="card" style="max-width:600px;">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-grid">
+      <!-- Name -->
+      <div class="form-group span2">
+        <label for="{{ form.name.id_for_label }}">Category Name *</label>
+        {{ form.name }}
+        {% if form.name.errors %}<ul class="errorlist">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <!-- Icon -->
+      <div class="form-group span2">
+        <label for="{{ form.icon.id_for_label }}">Icon</label>
+        {{ form.icon }}
+        {% if form.icon.errors %}<ul class="errorlist">{% for e in form.icon.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        <!-- Preview -->
+        <div id="icon-preview" style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+          <div style="width:42px;height:42px;background:rgba(79,142,247,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <i id="preview-icon" class="{{ form.icon.value }}" style="color:var(--accent);font-size:18px;"></i>
+          </div>
+          <span style="font-size:13px;color:var(--muted);">Icon preview</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i> Save Category
+      </button>
+      {% if obj %}
+      <a href="{% url 'dashboard:category_delete' obj.pk %}" class="btn btn-danger-outline">
+        <i class="fa-solid fa-trash"></i> Delete
+      </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<script>
+  const sel = document.getElementById('{{ form.icon.id_for_label }}');
+  const preview = document.getElementById('preview-icon');
+  if (sel && preview) {
+    sel.addEventListener('change', () => {
+      preview.className = sel.value;
+    });
+  }
+</script>
+{% endblock %}

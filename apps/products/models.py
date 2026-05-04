@@ -5,7 +5,7 @@ from django.urls import reverse
 class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
-    image = models.ImageField(upload_to='categories/', blank=True, null=True)
+    icon = models.CharField(max_length=50, blank=True, null=True, help_text="FontAwesome icon class (e.g., fa-solid fa-bed)")
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -27,10 +27,17 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
+    brand = models.CharField(max_length=100, blank=True, null=True, default="CONTEC")
     description = models.TextField()
     specifications = models.TextField(blank=True, help_text="Detailed technical specifications.")
     main_image = models.ImageField(upload_to='products/')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    old_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    discount_percent = models.IntegerField(null=True, blank=True)
+    badge = models.CharField(max_length=50, blank=True, null=True)
+    bg_color = models.CharField(max_length=20, default="#E8F3FA")
+    rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
+    review_count = models.IntegerField(default=0)
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,6 +48,9 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+        # Auto-calculate discount if not provided but both prices exist
+        if self.price and self.old_price and not self.discount_percent:
+            self.discount_percent = int(((self.old_price - self.price) / self.old_price) * 100)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

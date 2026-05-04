@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'core',
     'products',
     'blog',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -66,11 +67,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
-# Using sqlite3 as default if no env vars provided, or the postgres config from dev.py
+# # Using sqlite3 as default if no env vars provided, or the postgres config from dev.py
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+# config/settings.py
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'surgitechDB',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '5433',
     }
 }
 

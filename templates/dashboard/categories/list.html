@@ -1,0 +1,63 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Categories — Surgitech Dashboard{% endblock %}
+{% block nav_cat %}active{% endblock %}
+{% block topbar_title %}Categories{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Categories</h1>
+  <a href="{% url 'dashboard:category_add' %}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Add Category
+  </a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Icon</th>
+          <th>Name</th>
+          <th>Slug</th>
+          <th>Products</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr>
+          <td>
+            <div style="width:36px;height:36px;background:rgba(79,142,247,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <i class="{{ cat.icon }}" style="color:var(--accent);font-size:15px;"></i>
+            </div>
+          </td>
+          <td style="font-weight:600;">{{ cat.name }}</td>
+          <td style="color:var(--muted);font-size:13px;">{{ cat.slug }}</td>
+          <td><span class="badge badge-blue">{{ cat.products.count }} products</span></td>
+          <td>
+            <div style="display:flex;gap:8px;">
+              <a href="{{ cat.get_absolute_url }}" target="_blank" class="btn btn-ghost btn-sm" title="View on Site">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <a href="{% url 'dashboard:category_edit' cat.pk %}" class="btn btn-ghost btn-sm">
+                <i class="fa-solid fa-pen"></i> Edit
+              </a>
+              <a href="{% url 'dashboard:category_delete' cat.pk %}" class="btn btn-danger-outline btn-sm">
+                <i class="fa-solid fa-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;padding:40px;color:var(--muted);">
+            <i class="fa-solid fa-inbox" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+            No categories yet. <a href="{% url 'dashboard:category_add' %}" style="color:var(--accent);">Add one →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

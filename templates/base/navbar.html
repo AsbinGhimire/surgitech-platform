@@ -7,6 +7,9 @@
             <li><a href="{% url 'blog:list' %}">Blog</a></li>
             <li><a href="{% url 'core:about' %}">About</a></li>
             <li><a href="{% url 'core:contact' %}">Contact</a></li>
+            {% if user.is_staff %}
+            <li><a href="{% url 'dashboard:home' %}" class="btn-dashboard-nav" style="background: var(--primary); color: white; padding: 5px 12px; border-radius: 6px; font-weight: 600; font-size: 13px;">Admin Panel</a></li>
+            {% endif %}
         </ul>
     </div>
 </nav>

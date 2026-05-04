@@ -1,0 +1,24 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Delete {{ type }} — Surgitech Dashboard{% endblock %}
+{% block topbar_title %}Delete {{ type }}{% endblock %}
+
+{% block content %}
+<div class="confirm-card">
+  <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+  <h2>Delete {{ type }}?</h2>
+  <p>
+    You are about to permanently delete<br>
+    <strong style="color:var(--text);">{{ obj }}</strong>.<br>
+    This action cannot be undone.
+  </p>
+  <div class="confirm-actions">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn-danger">
+        <i class="fa-solid fa-trash"></i> Yes, Delete
+      </button>
+    </form>
+    <a href="javascript:history.back()" class="btn btn-ghost">Cancel</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }} — Surgitech Dashboard{% endblock %}
+{% block nav_prod %}active{% endblock %}
+{% block topbar_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ title }}</h1>
+  <a href="{% url 'dashboard:product_list' %}" class="btn btn-ghost">
+    <i class="fa-solid fa-arrow-left"></i> Back to Products
+  </a>
+</div>
+
+{% if obj and obj.main_image %}
+<div style="margin-bottom:20px;">
+  <img src="{{ obj.main_image.url }}" alt="{{ obj.name }}"
+       style="height:80px;border-radius:10px;object-fit:contain;background:#fff;padding:6px;" />
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <!-- Section: Basic Info -->
+  <div class="card" style="margin-bottom:20px;">
+    <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:18px;">
+      <i class="fa-solid fa-circle-info" style="color:var(--accent);margin-right:6px;"></i>Basic Information
+    </h3>
+    <div class="form-grid">
+      <div class="form-group span2">
+        <label>Category *</label>
+        {{ form.category }}
+        {% if form.category.errors %}<ul class="errorlist">{% for e in form.category.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group span2">
+        <label>Product Name *</label>
+        {{ form.name }}
+        {% if form.name.errors %}<ul class="errorlist">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group">
+        <label>Brand</label>
+        {{ form.brand }}
+      </div>
+      <div class="form-group">
+        <label>Badge <span style="color:var(--muted);font-weight:400;">(e.g. "New", "Best Seller")</span></label>
+        {{ form.badge }}
+      </div>
+      <div class="form-group span2">
+        <label>Description *</label>
+        {{ form.description }}
+        {% if form.description.errors %}<ul class="errorlist">{% for e in form.description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group span2">
+        <label>Specifications <span style="color:var(--muted);font-weight:400;">(technical details)</span></label>
+        {{ form.specifications }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Media & Appearance -->
+  <div class="card" style="margin-bottom:20px;">
+    <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:18px;">
+      <i class="fa-solid fa-image" style="color:var(--accent2);margin-right:6px;"></i>Media & Appearance
+    </h3>
+    <div class="form-grid">
+      <div class="form-group span2">
+        <label>Main Product Image</label>
+        {{ form.main_image }}
+        {% if form.main_image.errors %}<ul class="errorlist">{% for e in form.main_image.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <div class="form-group">
+        <label>Background Color</label>
+        <div style="display:flex;align-items:center;gap:10px;">
+          {{ form.bg_color }}
+          <span id="color-label" style="font-size:12px;color:var(--muted);">{{ form.bg_color.value }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Featured Product</label>
+        <div class="form-checkbox-wrap">
+          {{ form.is_featured }}
+          <label for="{{ form.is_featured.id_for_label }}">Mark as Featured</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Pricing -->
+  <div class="card" style="margin-bottom:20px;">
+    <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:18px;">
+      <i class="fa-solid fa-tag" style="color:var(--success);margin-right:6px;"></i>Pricing
+    </h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Sale Price ($)</label>
+        {{ form.price }}
+      </div>
+      <div class="form-group">
+        <label>Original Price ($) <span style="color:var(--muted);font-weight:400;">(for discount)</span></label>
+        {{ form.old_price }}
+      </div>
+      <div class="form-group">
+        <label>Discount % <span style="color:var(--muted);font-weight:400;">(auto-calculated if blank)</span></label>
+        {{ form.discount_percent }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Ratings -->
+  <div class="card" style="margin-bottom:28px;">
+    <h3 style="font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:18px;">
+      <i class="fa-solid fa-star" style="color:var(--warning);margin-right:6px;"></i>Ratings
+    </h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Rating (0–5)</label>
+        {{ form.rating }}
+      </div>
+      <div class="form-group">
+        <label>Review Count</label>
+        {{ form.review_count }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-floppy-disk"></i> Save Product
+    </button>
+    {% if obj %}
+    <a href="{% url 'dashboard:product_delete' obj.pk %}" class="btn btn-danger-outline">
+      <i class="fa-solid fa-trash"></i> Delete
+    </a>
+    {% endif %}
+    <a href="{% url 'dashboard:product_list' %}" class="btn btn-ghost">Cancel</a>
+  </div>
+</form>
+
+<script>
+  const colorInput = document.querySelector('input[type="color"]');
+  const colorLabel = document.getElementById('color-label');
+  if (colorInput && colorLabel) {
+    colorInput.addEventListener('input', () => { colorLabel.textContent = colorInput.value; });
+  }
+</script>
+{% endblock %}
