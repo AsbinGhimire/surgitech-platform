@@ -1,7 +1,66 @@
 {% extends 'base/base.html' %}
-{% block title %}Product Details - Surgitech{% endblock %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Surgitech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="page-container">
-    <h1>Product Detail</h1>
+    <div class="product-detail-grid">
+        <div class="product-gallery">
+            <div class="main-image">
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" id="current-image">
+            </div>
+            <div class="thumbnails">
+                <img src="{{ product.main_image.url }}" class="thumb active" onclick="changeImage(this.src)">
+                {% for img in product.images.all %}
+                    <img src="{{ img.image.url }}" class="thumb" onclick="changeImage(this.src)">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="product-details">
+            <nav class="breadcrumb">
+                <a href="{% url 'products:product_list' %}">Products</a> &raquo; 
+                <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
+            </nav>
+            <h1>{{ product.name }}</h1>
+            <p class="price-large">
+                {% if product.price %}
+                    ${{ product.price }}
+                {% else %}
+                    Contact for Pricing
+                {% endif %}
+            </p>
+            
+            <div class="description">
+                <h3>Description</h3>
+                <p>{{ product.description }}</p>
+            </div>
+
+            {% if product.specifications %}
+                <div class="specifications">
+                    <h3>Specifications</h3>
+                    <p>{{ product.specifications|linebreaks }}</p>
+                </div>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{% url 'core:contact' %}?product={{ product.id }}" class="btn-primary">Inquire Now</a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+function changeImage(src) {
+    document.getElementById('current-image').src = src;
+    const thumbs = document.querySelectorAll('.thumb');
+    thumbs.forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+}
+</script>
 {% endblock %}

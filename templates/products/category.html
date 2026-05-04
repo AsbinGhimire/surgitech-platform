@@ -1,7 +1,45 @@
 {% extends 'base/base.html' %}
-{% block title %}Category - Surgitech{% endblock %}
+{% load static %}
+
+{% block title %}{{ category.name }} - Surgitech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="page-container">
-    <h1>Category Name</h1>
+    <div class="category-header">
+        <h1>{{ category.name }}</h1>
+        <nav class="breadcrumb">
+            <a href="{% url 'products:product_list' %}">Products</a> &raquo; {{ category.name }}
+        </nav>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">
+                        {% if product.price %}
+                            ${{ product.price }}
+                        {% else %}
+                            Price on Request
+                        {% endif %}
+                    </p>
+                    <a href="{{ product.get_absolute_url }}" class="btn-detail">View Details</a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <h3>No Products Found</h3>
+                <p>We couldn't find any products in this category.</p>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

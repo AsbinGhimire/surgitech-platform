@@ -1,9 +1,17 @@
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #e74c3c;
-    --text-color: #333;
-    --bg-color: #f4f7f6;
+    --primary-color: #0f172a; /* Slate 900 */
+    --secondary-color: #0284c7; /* Sky 600 */
+    --accent-color: #38bdf8; /* Sky 400 */
+    --text-color: #334155; /* Slate 700 */
+    --text-muted: #64748b; /* Slate 500 */
+    --bg-color: #f8fafc; /* Slate 50 */
     --white: #ffffff;
+    --card-shadow: 0 10px 40px -10px rgba(0,0,0,0.06);
+    --hover-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.15);
+    --border-color: #e2e8f0; /* Slate 200 */
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 body {
@@ -12,12 +20,13 @@ body {
     background-color: var(--bg-color);
     margin: 0;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
 .page-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    max-width: 1280px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
 }
 
 .hero {
@@ -25,17 +34,30 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/images/hero-bg.jpg');
+    background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('/static/images/hero-bg.jpg');
     background-size: cover;
+    background-position: center;
     color: var(--white);
     text-align: center;
 }
 
 .btn-primary {
-    background-color: var(--secondary-color);
+    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
     color: var(--white);
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 2.5rem;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 50px;
     font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
 }

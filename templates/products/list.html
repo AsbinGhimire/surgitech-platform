@@ -1,12 +1,62 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
-{% block title %}Products - Surgitech{% endblock %}
+{% block title %}Our Products - Surgitech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="page-container">
-    <h1>Product List</h1>
-    <div class="product-grid">
-        <!-- Products will be listed here -->
+    <div class="products-header">
+        <h1>Surgical & Medical Equipment</h1>
+        <p>Browse our extensive catalog of premium medical supplies.</p>
+    </div>
+
+    <div class="products-layout">
+        <aside class="sidebar">
+            <h3>Categories</h3>
+            <ul class="category-list">
+                <li><a href="{% url 'products:product_list' %}">All Products</a></li>
+                {% for cat in categories %}
+                    <li><a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <section class="products-main">
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <div class="product-image">
+                            {% if product.main_image %}
+                                <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.jpg' %}" alt="No Image">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <span class="category-badge">{{ product.category.name }}</span>
+                            <h3>{{ product.name }}</h3>
+                            <p class="price">
+                                {% if product.price %}
+                                    ${{ product.price }}
+                                {% else %}
+                                    Price on Request
+                                {% endif %}
+                            </p>
+                            <a href="{{ product.get_absolute_url }}" class="btn-detail">View Details</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-state">
+                        <h3>No Products Found</h3>
+                        <p>We couldn't find any products matching your criteria.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
     </div>
 </div>
 {% endblock %}
