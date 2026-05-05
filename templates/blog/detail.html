@@ -1,7 +1,57 @@
 {% extends 'base/base.html' %}
-{% block title %}Post Detail - Surgitech{% endblock %}
+{% load static %}
+
+{% block title %}Insights & Innovation — Surgitech Blog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+<style>
+    .post-content-wrap {
+        max-width: 900px;
+        margin: 0 auto 5rem;
+        padding: 0 1.5rem;
+        display: block; /* Remove flex if any */
+    }
+    .post-content {
+        max-width: 100%;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="page-container">
-    <h1>Post Title</h1>
-</div>
+<article class="post-detail">
+    <header class="post-header">
+        <div class="page-container">
+            <div class="post-meta">
+                <span class="post-meta-item">
+                    <i class="fa-regular fa-calendar"></i> {{ post.created_at|date:"F d, Y" }}
+                </span>
+                {% if post.author %}
+                <span class="post-meta-item">
+                    <i class="fa-regular fa-user"></i> By {{ post.author.get_full_name|default:post.author.username }}
+                </span>
+                {% endif %}
+            </div>
+            <h1 class="post-title">{{ post.title }}</h1>
+        </div>
+    </header>
+
+    {% if post.image %}
+    <div class="post-featured-image">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    </div>
+    {% endif %}
+
+    <div class="post-content-wrap">
+        <div class="post-content">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <div style="margin-top: 5rem; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 3rem;">
+            <a href="{% url 'blog:list' %}" class="read-more" style="justify-content: center; font-size: 1.1rem;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Insights
+            </a>
+        </div>
+    </div>
+</article>
 {% endblock %}

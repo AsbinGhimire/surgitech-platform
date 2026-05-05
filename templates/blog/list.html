@@ -1,7 +1,53 @@
 {% extends 'base/base.html' %}
-{% block title %}Blog - Surgitech{% endblock %}
+{% load static %}
+
+{% block title %}Insights & Innovation — Surgitech Blog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="page-container">
-    <h1>Blog Posts</h1>
+<section class="blog-hero">
+    <div class="page-container">
+        <h1>Insights & Innovation</h1>
+        <p>Explore the latest advancements in medical technology, healthcare trends, and surgical excellence from the experts at Surgitech.</p>
+    </div>
+</section>
+
+<div class="page-container" style="margin-top: 4rem;">
+    <div class="blog-grid">
+        {% for post in posts %}
+        <article class="blog-card">
+            <div class="blog-card-image">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ post.title }}">
+                {% endif %}
+            </div>
+            <div class="blog-card-content">
+                <div class="blog-card-date">
+                    <i class="fa-regular fa-calendar"></i> {{ post.created_at|date:"F d, Y" }}
+                </div>
+                <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                <div class="blog-card-excerpt">
+                    {{ post.content|striptags|truncatewords:25 }}
+                </div>
+                <div class="blog-card-footer">
+                    <a href="{{ post.get_absolute_url }}" class="read-more">
+                        Read Article <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0;">
+            <i class="fa-solid fa-newspaper" style="font-size: 4rem; color: #e2e8f0; margin-bottom: 2rem; display: block;"></i>
+            <h2 style="color: #0f172a; margin-bottom: 1rem;">No articles found</h2>
+            <p style="color: #64748b;">We're currently preparing new content for you. Please check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

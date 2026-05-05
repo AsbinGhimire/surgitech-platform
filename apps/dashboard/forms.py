@@ -1,6 +1,7 @@
 from django import forms
 from products.models import Category, Product, ProductImage
-from blog.models import BlogCategory, BlogPost
+from blog.models import BlogPost
+
 
 
 
@@ -67,23 +68,14 @@ class ProductForm(forms.ModelForm):
             'is_featured':    forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }
 
-class BlogCategoryForm(forms.ModelForm):
-    class Meta:
-        model = BlogCategory
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Category name'}),
-        }
-
-
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'category', 'content', 'image', 'is_published']
+        fields = ['title', 'content', 'image', 'is_published']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Post title'}),
-            'category': forms.Select(attrs={'class': 'form-select'}),
             'content': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 10, 'placeholder': 'Write your post content here...'}),
             'image': forms.FileInput(attrs={'class': 'form-file'}),
             'is_published': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }
+

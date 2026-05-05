@@ -19,14 +19,9 @@ urlpatterns = [
     path('products/<int:pk>/edit/', views.product_edit, name='product_edit'),
     path('products/<int:pk>/delete/', views.product_delete, name='product_delete'),
 
-    # Blog Categories
-    path('blog/categories/', views.blog_category_list, name='blog_category_list'),
-    path('blog/categories/add/', views.blog_category_add, name='blog_category_add'),
-    path('blog/categories/<int:pk>/edit/', views.blog_category_edit, name='blog_category_edit'),
-    path('blog/categories/<int:pk>/delete/', views.blog_category_delete, name='blog_category_delete'),
-
     # Blog Posts
     path('blog/posts/', views.blog_post_list, name='blog_post_list'),
+
     path('blog/posts/add/', views.blog_post_add, name='blog_post_add'),
     path('blog/posts/<int:pk>/edit/', views.blog_post_edit, name='blog_post_edit'),
     path('blog/posts/<int:pk>/delete/', views.blog_post_delete, name='blog_post_delete'),

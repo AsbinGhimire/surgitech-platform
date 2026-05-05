@@ -1,4 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import BlogPost
 
 def blog_list(request):
-    return render(request, 'blog/list.html')
+    posts = BlogPost.objects.filter(is_published=True)
+    
+    context = {
+        'posts': posts,
+    }
+    return render(request, 'blog/list.html', context)
+
+def blog_detail(request, slug):
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    
+    context = {
+        'post': post,
+    }
+    return render(request, 'blog/detail.html', context)

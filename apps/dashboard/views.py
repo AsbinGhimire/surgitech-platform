@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from products.models import Category, Product
-from blog.models import BlogCategory, BlogPost
-from .forms import CategoryForm, ProductForm, BlogCategoryForm, BlogPostForm
+from blog.models import BlogPost
+from .forms import CategoryForm, ProductForm, BlogPostForm
+
 
 
 
@@ -114,46 +115,12 @@ def product_delete(request, pk):
         return redirect('dashboard:product_list')
     return render(request, 'dashboard/confirm_delete.html', {'obj': product, 'type': 'Product'})
 
-# ─── Blog Categories ────────────────────────────────────────────────────────
-@staff_member_required(login_url='/admin/login/')
-def blog_category_list(request):
-    categories = BlogCategory.objects.all()
-    return render(request, 'dashboard/blog/category_list.html', {'categories': categories})
-
-@staff_member_required(login_url='/admin/login/')
-def blog_category_add(request):
-    form = BlogCategoryForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Blog Category added successfully!')
-        return redirect('dashboard:blog_category_list')
-    return render(request, 'dashboard/blog/category_form.html', {'form': form, 'title': 'Add Blog Category'})
-
-@staff_member_required(login_url='/admin/login/')
-def blog_category_edit(request, pk):
-    category = get_object_or_404(BlogCategory, pk=pk)
-    form = BlogCategoryForm(request.POST or None, instance=category)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Blog Category updated successfully!')
-        return redirect('dashboard:blog_category_list')
-    return render(request, 'dashboard/blog/category_form.html', {'form': form, 'title': 'Edit Blog Category', 'obj': category})
-
-@staff_member_required(login_url='/admin/login/')
-def blog_category_delete(request, pk):
-    category = get_object_or_404(BlogCategory, pk=pk)
-    if request.method == 'POST':
-        category.delete()
-        messages.success(request, 'Blog Category deleted.')
-        return redirect('dashboard:blog_category_list')
-    return render(request, 'dashboard/confirm_delete.html', {'obj': category, 'type': 'Blog Category'})
-
-
 # ─── Blog Posts ─────────────────────────────────────────────────────────────
 @staff_member_required(login_url='/admin/login/')
 def blog_post_list(request):
-    posts = BlogPost.objects.select_related('category').order_by('-created_at')
+    posts = BlogPost.objects.all().order_by('-created_at')
     return render(request, 'dashboard/blog/post_list.html', {'posts': posts})
+
 
 @staff_member_required(login_url='/admin/login/')
 def blog_post_add(request):
