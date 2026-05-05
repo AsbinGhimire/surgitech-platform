@@ -1,5 +1,7 @@
 from django import forms
 from products.models import Category, Product, ProductImage
+from blog.models import BlogCategory, BlogPost
+
 
 
 ICON_CHOICES = [
@@ -63,4 +65,25 @@ class ProductForm(forms.ModelForm):
             'rating':         forms.NumberInput(attrs={'class': 'form-input', 'step': '0.1', 'min': '0', 'max': '5'}),
             'review_count':   forms.NumberInput(attrs={'class': 'form-input', 'placeholder': '0'}),
             'is_featured':    forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+        }
+
+class BlogCategoryForm(forms.ModelForm):
+    class Meta:
+        model = BlogCategory
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Category name'}),
+        }
+
+
+class BlogPostForm(forms.ModelForm):
+    class Meta:
+        model = BlogPost
+        fields = ['title', 'category', 'content', 'image', 'is_published']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Post title'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'content': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 10, 'placeholder': 'Write your post content here...'}),
+            'image': forms.FileInput(attrs={'class': 'form-file'}),
+            'is_published': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }

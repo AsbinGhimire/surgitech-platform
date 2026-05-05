@@ -3,22 +3,25 @@ from .models import Product, Category
 
 def product_list(request):
     """
-    Displays all available products, optimized with select_related.
+    Displays all products grouped by category on a single page.
     """
-    products = Product.objects.select_related('category').all()
-    categories = Category.objects.all()
+    categories_with_products = Category.objects.prefetch_related('products').all()
+    # Filter out categories that have no products if desired, 
+    # but for a catalog, showing empty categories might be fine too.
     return render(request, 'products/list.html', {
-        'products': products,
-        'categories': categories,
+        'categories_with_products': categories_with_products,
     })  
 
 def product_detail(request, slug):
     """
-    Displays a single product detail, optimized with prefetch_related for the gallery.
+    Displays a single product detail with its gallery and related products.
     """
     product = get_object_or_404(Product.objects.prefetch_related('images'), slug=slug)
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
+    
     return render(request, 'products/detail.html', {
-        'product': product
+        'product': product,
+        'related_products': related_products
     })
 
 def category_products(request, slug):

@@ -53,6 +53,47 @@
             </div>
         </div>
     </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <section class="related-products" style="margin-top: 6rem;">
+        <div class="section-header-inline" style="margin-bottom: 2rem;">
+            <div class="section-title-wrap">
+                <span class="pill-badge">YOU MAY ALSO LIKE</span>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 2rem; color: var(--primary-color);">Related Equipment</h2>
+            </div>
+        </div>
+        <div class="product-grid premium-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+            {% for p in related_products %}
+            <div class="product-card">
+                <div class="product-image" style="height: 180px; padding: 1.5rem;">
+                    {% if p.main_image %}
+                        <img src="{{ p.main_image.url }}" alt="{{ p.name }}" style="max-height: 120px;">
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <span class="brand-name">{{ p.brand|default:"CONTEC" }}</span>
+                    <h3 style="font-size: 0.95rem; min-height: 2.4em;"><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></h3>
+                    <div class="price-box" style="margin-bottom: 0;">
+                        <span class="current-price" style="font-size: 1.1rem;">{% if p.price %}Rs.{{ p.price|floatformat:"0" }}{% else %}Price on Request{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Inquiry Banner -->
+    <section class="inquiry-banner" style="margin-top: 6rem; background: var(--primary-color); padding: 4rem; border-radius: 30px; text-align: center; color: #fff; position: relative; overflow: hidden;">
+        <div style="position: relative; z-index: 2;">
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; margin-bottom: 1rem;">Need a Bulk Quotation?</h2>
+            <p style="opacity: 0.9; font-size: 1.1rem; max-width: 600px; margin: 0 auto 2.5rem;">Get in touch with our medical equipment experts for personalized pricing and bulk order discounts.</p>
+            <a href="{% url 'core:contact' %}?product={{ product.id }}" class="btn-primary" style="background: #fff; color: var(--primary-color); padding: 1.2rem 3rem; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-block;">Request a Quote</a>
+        </div>
+        <!-- Decorative Circle -->
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+    </section>
 </div>
 
 <script>

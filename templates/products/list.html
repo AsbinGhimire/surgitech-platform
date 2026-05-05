@@ -1,84 +1,282 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
-{% block title %}Our Products - Surgitech{% endblock %}
+{% block title %}Our Catalog - Surgitech{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/product.css' %}">
+<style>
+    /* ─── Stunning UI Overrides ─── */
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.4);
+    }
+
+    .catalog-wrapper {
+        display: flex;
+        gap: 3rem;
+        position: relative;
+        padding-top: 2rem;
+    }
+
+    /* Floating Jump Menu */
+    .jump-menu {
+        width: 280px;
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        z-index: 10;
+    }
+
+    .jump-menu h3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        padding-left: 0.5rem;
+    }
+
+    .jump-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .jump-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 14px;
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+    }
+
+    .jump-link i {
+        width: 20px;
+        text-align: center;
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .jump-link:hover {
+        background: #fff;
+        color: var(--secondary-color);
+        transform: translateX(8px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .jump-link.active {
+        background: var(--primary-color);
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+    }
+    .jump-link.active i { color: #fff; }
+
+    /* Catalog Sections */
+    .catalog-main {
+        flex: 1;
+    }
+
+    .category-section {
+        margin-bottom: 6rem;
+        scroll-margin-top: 120px; /* Offset for sticky header */
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eef2f6;
+    }
+
+    .section-title i {
+        font-size: 1.8rem;
+        color: var(--secondary-color);
+        background: rgba(2, 132, 199, 0.08);
+        width: 54px; height: 54px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 16px;
+    }
+
+    .section-title h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--primary-color);
+    }
+
+    .section-title .count {
+        font-size: 0.9rem;
+        background: #f1f5f9;
+        color: #64748b;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-left: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+        .catalog-wrapper { flex-direction: column; }
+        .jump-menu {
+            width: 100%;
+            position: sticky;
+            top: 70px;
+            overflow-x: auto;
+            padding: 1rem;
+            border-radius: 16px;
+        }
+        .jump-links {
+            flex-direction: row;
+            gap: 10px;
+        }
+        .jump-link {
+            white-space: nowrap;
+            padding: 8px 16px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="page-container">
     <div class="products-header">
-        <h1>Surgical & Medical Equipment</h1>
-        <p>Browse our extensive catalog of premium medical supplies.</p>
+        <h1>Medical Equipment Catalog</h1>
+        <p>A comprehensive overview of our premium medical supplies, grouped for your convenience.</p>
     </div>
 
-    <div class="products-layout">
-        <aside class="sidebar">
-            <h3>Categories</h3>
-            <ul class="category-list">
-                <li><a href="{% url 'products:product_list' %}">All Products</a></li>
-                {% for cat in categories %}
-                    <li>
-                        <a href="{{ cat.get_absolute_url }}">
-                            {% if cat.icon %}<i class="{{ cat.icon }}"></i> {% endif %}{{ cat.name }}
-                        </a>
-                    </li>
+    <div class="catalog-wrapper">
+        <!-- Stunning Floating Jump Menu -->
+        <aside class="jump-menu">
+            <h3>Quick Jump</h3>
+            <ul class="jump-links">
+                {% for cat in categories_with_products %}
+                <li>
+                    <a href="#cat-{{ cat.id }}" class="jump-link">
+                        <i class="{{ cat.icon|default:'fa-solid fa-box' }}"></i>
+                        <span>{{ cat.name }}</span>
+                    </a>
+                </li>
                 {% endfor %}
             </ul>
         </aside>
 
-        <section class="products-main">
-            <div class="product-grid">
-                {% for product in products %}
-                    <div class="product-card">
-                        <div class="product-image">
-                            <div class="card-badges">
-                                {% if product.discount_percent %}
-                                <span class="badge-discount">-{{ product.discount_percent }}%</span>
-                                {% endif %}
-                                {% if product.badge %}
-                                <span class="badge-special {{ product.badge|lower }}">{{ product.badge }}</span>
-                                {% endif %}
-                            </div>
-                            {% if product.main_image %}
-                                <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
-                            {% else %}
-                                <img src="{% static 'images/placeholder.jpg' %}" alt="No Image">
-                            {% endif %}
-                        </div>
-                        <div class="product-info">
-                            <span class="brand-name">{{ product.brand|default:"CONTEC" }}</span>
-                            <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
-                            
-                            <div class="rating-box">
-                                <span class="stars">
-                                    ★ ★ ★ ★ ★
-                                </span>
-                                <span class="review-count">({{ product.review_count|default:"12" }})</span>
-                            </div>
+        <!-- Main Catalog Flow -->
+        <main class="catalog-main">
+            {% for cat in categories_with_products %}
+                {% if cat.products.all %}
+                <section id="cat-{{ cat.id }}" class="category-section">
+                    <div class="section-title">
+                        <i class="{{ cat.icon|default:'fa-solid fa-box' }}"></i>
+                        <h2>{{ cat.name }}</h2>
+                        <span class="count">{{ cat.products.count }} Items</span>
+                    </div>
 
-                            <div class="price-box">
-                                <span class="current-price">
-                                    {% if product.price %}Rs.{{ product.price|floatformat:"0" }}{% else %}Price on Request{% endif %}
-                                </span>
-                                {% if product.old_price %}
-                                <span class="old-price">Rs.{{ product.old_price|floatformat:"0" }}</span>
-                                {% endif %}
+                    <div class="product-grid">
+                        {% for product in cat.products.all %}
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <div class="card-badges">
+                                        {% if product.discount_percent %}
+                                        <span class="badge-discount">-{{ product.discount_percent }}%</span>
+                                        {% endif %}
+                                        {% if product.badge %}
+                                        <span class="badge-special {{ product.badge|lower }}">{{ product.badge }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if product.main_image %}
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                                    {% else %}
+                                        <div style="font-size:3rem;color:#cbd5e1;"><i class="fa-solid fa-image"></i></div>
+                                    {% endif %}
+                                </div>
+                                <div class="product-info">
+                                    <span class="brand-name">{{ product.brand|default:"CONTEC" }}</span>
+                                    <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                                    
+                                    <div class="rating-box">
+                                        <span class="stars">★ ★ ★ ★ ★</span>
+                                        <span class="review-count">({{ product.review_count|default:"12" }})</span>
+                                    </div>
+
+                                    <div class="price-box">
+                                        <span class="current-price">
+                                            {% if product.price %}Rs.{{ product.price|floatformat:"0" }}{% else %}Price on Request{% endif %}
+                                        </span>
+                                        {% if product.old_price %}
+                                        <span class="old-price">Rs.{{ product.old_price|floatformat:"0" }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <a href="{{ product.get_absolute_url }}" class="btn-add-cart" style="text-decoration:none;">View Product</a>
+                                </div>
                             </div>
-                            
-                            <button class="btn-add-cart">Add to Cart</button>
-                        </div>
+                        {% endfor %}
                     </div>
-                {% empty %}
-                    <div class="empty-state">
-                        <h3>No Products Found</h3>
-                        <p>We couldn't find any products matching your criteria.</p>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
+                </section>
+                {% endif %}
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fa-solid fa-folder-open" style="font-size:4rem;color:#e2e8f0;margin-bottom:1rem;"></i>
+                    <h3>No Categories Found</h3>
+                    <p>We're currently updating our catalog. Please check back soon.</p>
+                </div>
+            {% endfor %}
+        </main>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scroll for jump links
+    document.querySelectorAll('.jump-link').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const id = link.getAttribute('href');
+            document.querySelector(id).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Active state on scroll
+    const sections = document.querySelectorAll('.category-section');
+    const jumpLinks = document.querySelectorAll('.jump-link');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (pageYOffset >= (sectionTop - 200)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        jumpLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
 {% endblock %}

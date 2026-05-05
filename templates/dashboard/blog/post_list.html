@@ -1,0 +1,83 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Blog Posts — Surgitech Dashboard{% endblock %}
+{% block nav_blog %}active{% endblock %}
+{% block topbar_title %}Blog Posts{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Blog Posts</h1>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <a href="{% url 'dashboard:blog_category_list' %}" class="btn btn-ghost">
+      <i class="fa-solid fa-list"></i> Categories
+    </a>
+    <a href="{% url 'dashboard:blog_post_add' %}" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i> Add Post
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Post Title</th>
+          <th>Category</th>
+          <th>Author</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in posts %}
+        <tr>
+          <td>
+            {% if p.image %}
+              <img src="{{ p.image.url }}" alt="{{ p.title }}" class="product-thumb" />
+            {% else %}
+              <div class="product-thumb-placeholder"><i class="fa-solid fa-image"></i></div>
+            {% endif %}
+          </td>
+          <td style="font-weight:600;max-width:250px;">{{ p.title|truncatechars:60 }}</td>
+          <td>
+            {% if p.category %}
+              <span class="badge badge-blue">{{ p.category.name }}</span>
+            {% else %}
+              <span class="badge badge-muted">Uncategorized</span>
+            {% endif %}
+          </td>
+          <td style="color:var(--muted);font-size:13px;">{{ p.author.username|default:"—" }}</td>
+          <td style="color:var(--muted);font-size:13px;">{{ p.created_at|date:"M d, Y" }}</td>
+          <td>
+            {% if p.is_published %}
+              <span class="badge badge-green">Published</span>
+            {% else %}
+              <span class="badge badge-muted">Draft</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:8px;">
+              <a href="{% url 'dashboard:blog_post_edit' p.pk %}" class="btn btn-ghost btn-sm">
+                <i class="fa-solid fa-pen"></i> Edit
+              </a>
+              <a href="{% url 'dashboard:blog_post_delete' p.pk %}" class="btn btn-danger-outline btn-sm">
+                <i class="fa-solid fa-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">
+            <i class="fa-solid fa-pen-nib" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+            No blog posts found. <a href="{% url 'dashboard:blog_post_add' %}" style="color:var(--accent);">Create one →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

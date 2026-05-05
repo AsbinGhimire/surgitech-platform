@@ -1,0 +1,60 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Blog Categories — Surgitech Dashboard{% endblock %}
+{% block nav_blog %}active{% endblock %}
+{% block topbar_title %}Blog Categories{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Blog Categories</h1>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <a href="{% url 'dashboard:blog_post_list' %}" class="btn btn-ghost">
+      <i class="fa-solid fa-arrow-left"></i> Back to Posts
+    </a>
+    <a href="{% url 'dashboard:blog_category_add' %}" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i> Add Category
+    </a>
+  </div>
+</div>
+
+<div class="card" style="max-width:800px;">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Category Name</th>
+          <th>Slug</th>
+          <th>Posts</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr>
+          <td style="font-weight:600;">{{ cat.name }}</td>
+          <td style="color:var(--muted);font-size:13px;">{{ cat.slug }}</td>
+          <td>
+            <span class="badge badge-muted">{{ cat.posts.count }}</span>
+          </td>
+          <td>
+            <div style="display:flex;gap:8px;">
+              <a href="{% url 'dashboard:blog_category_edit' cat.pk %}" class="btn btn-ghost btn-sm">
+                <i class="fa-solid fa-pen"></i> Edit
+              </a>
+              <a href="{% url 'dashboard:blog_category_delete' cat.pk %}" class="btn btn-danger-outline btn-sm">
+                <i class="fa-solid fa-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" style="text-align:center;padding:40px;color:var(--muted);">
+            No categories found. <a href="{% url 'dashboard:blog_category_add' %}" style="color:var(--accent);">Add one →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

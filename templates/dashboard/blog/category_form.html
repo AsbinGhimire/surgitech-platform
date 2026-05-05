@@ -1,0 +1,36 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ title }} — Surgitech Dashboard{% endblock %}
+{% block nav_blog %}active{% endblock %}
+{% block topbar_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ title }}</h1>
+  <a href="{% url 'dashboard:blog_category_list' %}" class="btn btn-ghost">
+    <i class="fa-solid fa-arrow-left"></i> Back to Categories
+  </a>
+</div>
+
+<div class="card" style="max-width:600px;">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group" style="margin-bottom:20px;">
+      <label>Category Name *</label>
+      {{ form.name }}
+      {% if form.name.errors %}<ul class="errorlist">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i> Save Category
+      </button>
+      {% if obj %}
+      <a href="{% url 'dashboard:blog_category_delete' obj.pk %}" class="btn btn-danger-outline">
+        <i class="fa-solid fa-trash"></i> Delete
+      </a>
+      {% endif %}
+      <a href="{% url 'dashboard:blog_category_list' %}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from products.models import Category, Product
-from .forms import CategoryForm, ProductForm
+from blog.models import BlogCategory, BlogPost
+from .forms import CategoryForm, ProductForm, BlogCategoryForm, BlogPostForm
+
 
 
 # ─── Home ────────────────────────────────────────────────────────────────────
@@ -111,3 +113,74 @@ def product_delete(request, pk):
         messages.success(request, 'Product deleted.')
         return redirect('dashboard:product_list')
     return render(request, 'dashboard/confirm_delete.html', {'obj': product, 'type': 'Product'})
+
+# ─── Blog Categories ────────────────────────────────────────────────────────
+@staff_member_required(login_url='/admin/login/')
+def blog_category_list(request):
+    categories = BlogCategory.objects.all()
+    return render(request, 'dashboard/blog/category_list.html', {'categories': categories})
+
+@staff_member_required(login_url='/admin/login/')
+def blog_category_add(request):
+    form = BlogCategoryForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Blog Category added successfully!')
+        return redirect('dashboard:blog_category_list')
+    return render(request, 'dashboard/blog/category_form.html', {'form': form, 'title': 'Add Blog Category'})
+
+@staff_member_required(login_url='/admin/login/')
+def blog_category_edit(request, pk):
+    category = get_object_or_404(BlogCategory, pk=pk)
+    form = BlogCategoryForm(request.POST or None, instance=category)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Blog Category updated successfully!')
+        return redirect('dashboard:blog_category_list')
+    return render(request, 'dashboard/blog/category_form.html', {'form': form, 'title': 'Edit Blog Category', 'obj': category})
+
+@staff_member_required(login_url='/admin/login/')
+def blog_category_delete(request, pk):
+    category = get_object_or_404(BlogCategory, pk=pk)
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, 'Blog Category deleted.')
+        return redirect('dashboard:blog_category_list')
+    return render(request, 'dashboard/confirm_delete.html', {'obj': category, 'type': 'Blog Category'})
+
+
+# ─── Blog Posts ─────────────────────────────────────────────────────────────
+@staff_member_required(login_url='/admin/login/')
+def blog_post_list(request):
+    posts = BlogPost.objects.select_related('category').order_by('-created_at')
+    return render(request, 'dashboard/blog/post_list.html', {'posts': posts})
+
+@staff_member_required(login_url='/admin/login/')
+def blog_post_add(request):
+    form = BlogPostForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        messages.success(request, 'Blog Post added successfully!')
+        return redirect('dashboard:blog_post_list')
+    return render(request, 'dashboard/blog/post_form.html', {'form': form, 'title': 'Add Blog Post'})
+
+@staff_member_required(login_url='/admin/login/')
+def blog_post_edit(request, pk):
+    post = get_object_or_404(BlogPost, pk=pk)
+    form = BlogPostForm(request.POST or None, request.FILES or None, instance=post)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Blog Post updated successfully!')
+        return redirect('dashboard:blog_post_list')
+    return render(request, 'dashboard/blog/post_form.html', {'form': form, 'title': 'Edit Blog Post', 'obj': post})
+
+@staff_member_required(login_url='/admin/login/')
+def blog_post_delete(request, pk):
+    post = get_object_or_404(BlogPost, pk=pk)
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Blog Post deleted.')
+        return redirect('dashboard:blog_post_list')
+    return render(request, 'dashboard/confirm_delete.html', {'obj': post, 'type': 'Blog Post'})
