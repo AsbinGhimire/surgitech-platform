@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Merge Category — Surgitech Dashboard{% endblock %}
+{% block nav_cat %}active{% endblock %}
+{% block topbar_title %}Merge Category{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Merge Category: {{ source_category.name }}</h1>
+  <a href="{% url 'dashboard:category_list' %}" class="btn btn-ghost">
+    <i class="fa-solid fa-arrow-left"></i> Back to Categories
+  </a>
+</div>
+
+<div class="confirm-card" style="max-width: 600px; text-align: left;">
+  <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; padding:15px; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); border-radius:12px;">
+    <i class="fa-solid fa-triangle-exclamation" style="font-size:24px; color:var(--warning);"></i>
+    <div>
+      <h3 style="font-size:16px; margin-bottom:4px; color:var(--warning);">Careful! This action is permanent.</h3>
+      <p style="font-size:13px; color:var(--muted);">Merging will move all <strong>{{ source_category.products.count }} products</strong> from "{{ source_category.name }}" to your selected target category, and then delete "{{ source_category.name }}".</p>
+    </div>
+  </div>
+
+  <form method="post" class="card">
+    {% csrf_token %}
+    
+    <div class="form-group" style="margin-bottom:20px;">
+      <label>{{ form.target_category.label }}</label>
+      {{ form.target_category }}
+      <p style="font-size:12px; color:var(--muted); margin-top:6px;">{{ form.target_category.help_text }}</p>
+      {% if form.target_category.errors %}
+        <ul class="errorlist">{% for e in form.target_category.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      {% endif %}
+    </div>
+
+    <div style="display:flex; gap:12px;">
+      <button type="submit" class="btn btn-primary" style="background:var(--warning); border:none;">
+        <i class="fa-solid fa-code-merge"></i> Confirm Merge
+      </button>
+      <a href="{% url 'dashboard:category_list' %}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

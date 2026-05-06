@@ -1,11 +1,12 @@
 from django.db import models
-from django.utils.text import slugify
+from django.utils.text import slugify 
 from django.urls import reverse
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
     icon = models.CharField(max_length=50, blank=True, null=True, help_text="FontAwesome icon class (e.g., fa-solid fa-bed)")
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -32,8 +33,6 @@ class Product(models.Model):
     specifications = models.TextField(blank=True, help_text="Detailed technical specifications.")
     main_image = models.ImageField(upload_to='products/')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    old_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    discount_percent = models.IntegerField(null=True, blank=True)
     badge = models.CharField(max_length=50, blank=True, null=True)
     bg_color = models.CharField(max_length=20, default="#E8F3FA")
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
@@ -48,9 +47,6 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
-        # Auto-calculate discount if not provided but both prices exist
-        if self.price and self.old_price and not self.discount_percent:
-            self.discount_percent = int(((self.old_price - self.price) / self.old_price) * 100)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

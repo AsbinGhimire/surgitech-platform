@@ -18,6 +18,7 @@
         <tr>
           <th>Icon</th>
           <th>Name</th>
+          <th>Parent</th>
           <th>Slug</th>
           <th>Products</th>
           <th>Actions</th>
@@ -32,6 +33,7 @@
             </div>
           </td>
           <td style="font-weight:600;">{{ cat.name }}</td>
+          <td style="font-size:13px;color:var(--muted);">{{ cat.parent.name|default:"—" }}</td>
           <td style="color:var(--muted);font-size:13px;">{{ cat.slug }}</td>
           <td><span class="badge badge-blue">{{ cat.products.count }} products</span></td>
           <td>
@@ -39,8 +41,11 @@
               <a href="{{ cat.get_absolute_url }}" target="_blank" class="btn btn-ghost btn-sm" title="View on Site">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
               </a>
-              <a href="{% url 'dashboard:category_edit' cat.pk %}" class="btn btn-ghost btn-sm">
-                <i class="fa-solid fa-pen"></i> Edit
+              <a href="{% url 'dashboard:category_edit' cat.pk %}" class="btn btn-ghost btn-sm" title="Edit">
+                <i class="fa-solid fa-pen"></i>
+              </a>
+              <a href="{% url 'dashboard:category_merge' cat.pk %}" class="btn btn-ghost btn-sm" title="Merge Into Another" style="color:var(--warning);">
+                <i class="fa-solid fa-code-merge"></i>
               </a>
               <a href="{% url 'dashboard:category_delete' cat.pk %}" class="btn btn-danger-outline btn-sm">
                 <i class="fa-solid fa-trash"></i>

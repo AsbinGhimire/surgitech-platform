@@ -53,20 +53,17 @@
     <div class="section-header-inline">
         <div class="section-title-wrap">
             <span class="pill-badge">CLINICAL EXCELLENCE</span>
-            <h2>Featured Medical Supplies</h2>
-            <p class="subtitle">Premium equipment trusted by healthcare professionals worldwide.</p>
+            <h2>Latest Medical Supplies</h2>
+            <p class="subtitle">Our newest premium equipment trusted by healthcare professionals.</p>
         </div>
         <a href="{% url 'products:product_list' %}" class="btn-outline-pill">View All Products &rarr;</a>
     </div>
     
     <div class="product-grid premium-grid">
-        {% for product in featured_products %}
+        {% for product in latest_products %}
             <div class="product-card">
                 <div class="product-image">
                     <div class="card-badges">
-                        {% if product.discount_percent %}
-                        <span class="badge-discount">-{{ product.discount_percent }}%</span>
-                        {% endif %}
                         {% if product.badge %}
                         <span class="badge-special {{ product.badge|lower }}">{{ product.badge }}</span>
                         {% endif %}
@@ -78,23 +75,12 @@
                     {% endif %}
                 </div>
                 <div class="product-info">
-                    <span class="brand-name">{{ product.brand|default:"CONTEC" }}</span>
                     <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
                     
-                    <div class="rating-box">
-                        <span class="stars">
-                            ★ ★ ★ ★ ★
-                        </span>
-                        <span class="review-count">({{ product.review_count|default:"12" }})</span>
-                    </div>
-
                     <div class="price-box">
                         <span class="current-price">
                             {% if product.price %}Rs.{{ product.price|floatformat:"0" }}{% else %}Price on Request{% endif %}
                         </span>
-                        {% if product.old_price %}
-                        <span class="old-price">Rs.{{ product.old_price|floatformat:"0" }}</span>
-                        {% endif %}
                     </div>
                     
                     <button class="btn-add-cart">Add to Cart</button>
@@ -102,7 +88,7 @@
             </div>
         {% empty %}
             <div class="empty-state">
-                <h3>No Featured Products</h3>
+                <h3>No Products Found</h3>
             </div>
         {% endfor %}
     </div>

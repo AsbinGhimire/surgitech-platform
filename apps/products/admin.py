@@ -24,9 +24,9 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display   = ('get_thumbnail', 'name', 'category', 'brand', 'price', 'old_price', 'discount_percent', 'is_featured', 'created_at')
-    list_filter    = ('category', 'is_featured', 'brand', 'created_at')
-    list_editable  = ('is_featured', 'price')
+    list_display   = ('get_thumbnail', 'name', 'category', 'brand', 'price', 'created_at')
+    list_filter    = ('category', 'brand', 'created_at')
+    list_editable  = ('price',)
     search_fields  = ('name', 'description', 'brand')
     prepopulated_fields = {'slug': ('name',)}
     inlines        = [ProductImageInline]
@@ -35,7 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Basic Info', {
-            'fields': ('category', 'name', 'slug', 'brand', 'badge', 'is_featured')
+            'fields': ('category', 'name', 'slug', 'brand', 'badge')
         }),
         ('Description & Specs', {
             'fields': ('description', 'specifications'),
@@ -45,7 +45,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('main_image', 'bg_color'),
         }),
         ('Pricing', {
-            'fields': ('price', 'old_price', 'discount_percent'),
+            'fields': ('price',),
         }),
         ('Ratings', {
             'fields': ('rating', 'review_count'),
@@ -66,7 +66,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display        = ('icon', 'name', 'slug', 'product_count')
+    list_display        = ('icon', 'name', 'parent', 'slug', 'product_count')
+    list_filter         = ('parent',)
     prepopulated_fields = {'slug': ('name',)}
     search_fields       = ('name',)
     list_per_page       = 20

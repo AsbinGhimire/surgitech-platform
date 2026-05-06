@@ -12,6 +12,7 @@ urlpatterns = [
     path('categories/add/', views.category_add, name='category_add'),
     path('categories/<int:pk>/edit/', views.category_edit, name='category_edit'),
     path('categories/<int:pk>/delete/', views.category_delete, name='category_delete'),
+    path('categories/<int:pk>/merge/', views.category_merge, name='category_merge'),
 
     # Products
     path('products/', views.product_list, name='product_list'),

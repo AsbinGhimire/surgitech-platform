@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from products.models import Category, Product
 from blog.models import BlogPost
-from .forms import CategoryForm, ProductForm, BlogPostForm
+from .forms import CategoryForm, ProductForm, BlogPostForm, CategoryMergeForm
 
 
 
@@ -15,7 +15,6 @@ def dashboard_home(request):
     context = {
         'total_categories': Category.objects.count(),
         'total_products':   Product.objects.count(),
-        'featured_count':   Product.objects.filter(is_featured=True).count(),
         'recent_products':  Product.objects.select_related('category').order_by('-created_at')[:6],
         'categories':       Category.objects.all(),
     }
@@ -59,6 +58,31 @@ def category_delete(request, pk):
         messages.success(request, 'Category deleted.')
         return redirect('dashboard:category_list')
     return render(request, 'dashboard/confirm_delete.html', {'obj': category, 'type': 'Category'})
+
+
+@staff_member_required(login_url='/admin/login/')
+def category_merge(request, pk):
+    source_category = get_object_or_404(Category, pk=pk)
+    form = CategoryMergeForm(request.POST or None, exclude_id=pk)
+    
+    if request.method == 'POST' and form.is_valid():
+        target_category = form.cleaned_data['target_category']
+        product_count = source_category.products.count()
+        
+        # Move products
+        source_category.products.all().update(category=target_category)
+        
+        # Delete source category
+        source_category.delete()
+        
+        messages.success(request, f'Successfully merged {product_count} products into "{target_category.name}" and deleted "{source_category.name}".')
+        return redirect('dashboard:category_list')
+        
+    return render(request, 'dashboard/categories/merge.html', {
+        'form': form,
+        'source_category': source_category,
+        'title': 'Merge Category'
+    })
 
 
 # ─── Products ────────────────────────────────────────────────────────────────

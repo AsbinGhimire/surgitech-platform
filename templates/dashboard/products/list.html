@@ -45,7 +45,6 @@
           <th>Category</th>
           <th>Brand</th>
           <th>Price</th>
-          <th>Featured</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -66,13 +65,6 @@
           <td style="color:var(--muted);font-size:13px;">{{ p.brand|default:"—" }}</td>
           <td style="font-weight:600;">
             {% if p.price %}${{ p.price }}{% else %}<span style="color:var(--muted);">—</span>{% endif %}
-          </td>
-          <td>
-            {% if p.is_featured %}
-              <span class="badge badge-green"><i class="fa-solid fa-star"></i> Yes</span>
-            {% else %}
-              <span class="badge badge-muted">No</span>
-            {% endif %}
           </td>
           <td>
             <div style="display:flex;gap:8px;">

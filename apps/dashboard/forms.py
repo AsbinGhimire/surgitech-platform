@@ -34,12 +34,13 @@ class CategoryForm(forms.ModelForm):
 
     class Meta:
         model = Category
-        fields = ['name', 'icon']
+        fields = ['name', 'icon', 'parent']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': 'e.g. Hospital Beds',
             }),
+            'parent': forms.Select(attrs={'class': 'form-select'}),
         }
 
 
@@ -48,8 +49,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = [
             'category', 'name', 'brand', 'description', 'specifications',
-            'main_image', 'price', 'old_price', 'discount_percent',
-            'badge', 'bg_color', 'rating', 'review_count', 'is_featured',
+            'main_image', 'price', 'badge', 'bg_color', 'rating', 'review_count',
         ]
         widgets = {
             'category':       forms.Select(attrs={'class': 'form-select'}),
@@ -59,13 +59,10 @@ class ProductForm(forms.ModelForm):
             'specifications': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 5, 'placeholder': 'Technical specs (one per line)…'}),
             'main_image':     forms.FileInput(attrs={'class': 'form-file'}),
             'price':          forms.NumberInput(attrs={'class': 'form-input', 'placeholder': '0.00'}),
-            'old_price':      forms.NumberInput(attrs={'class': 'form-input', 'placeholder': '0.00'}),
-            'discount_percent': forms.NumberInput(attrs={'class': 'form-input', 'placeholder': 'Auto-calculated if blank'}),
             'badge':          forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. New, Best Seller'}),
             'bg_color':       forms.TextInput(attrs={'class': 'form-input', 'type': 'color'}),
             'rating':         forms.NumberInput(attrs={'class': 'form-input', 'step': '0.1', 'min': '0', 'max': '5'}),
             'review_count':   forms.NumberInput(attrs={'class': 'form-input', 'placeholder': '0'}),
-            'is_featured':    forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }
 
 class BlogPostForm(forms.ModelForm):
@@ -78,4 +75,19 @@ class BlogPostForm(forms.ModelForm):
             'image': forms.FileInput(attrs={'class': 'form-file'}),
             'is_published': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }
+
+
+class CategoryMergeForm(forms.Form):
+    target_category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        label="Merge into",
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        help_text="All products from the current category will be moved to this category."
+    )
+
+    def __init__(self, *args, **kwargs):
+        exclude_id = kwargs.pop('exclude_id', None)
+        super().__init__(*args, **kwargs)
+        if exclude_id:
+            self.fields['target_category'].queryset = Category.objects.exclude(id=exclude_id)
 

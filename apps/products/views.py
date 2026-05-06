@@ -5,11 +5,20 @@ def product_list(request):
     """
     Displays all products grouped by category on a single page.
     """
-    categories_with_products = Category.objects.prefetch_related('products').all()
-    # Filter out categories that have no products if desired, 
-    # but for a catalog, showing empty categories might be fine too.
+    from django.db.models import Count, Q
+    categories_with_products = Category.objects.filter(parent=None).annotate(
+        product_count=Count('products', distinct=True),
+        child_product_count=Count('children__products', distinct=True)
+    ).filter(Q(product_count__gt=0) | Q(child_product_count__gt=0)).prefetch_related('children', 'products', 'children__products').all()
+    
+    # For the Quick Jump menu: Top 12 categories by product count
+    popular_categories = Category.objects.annotate(
+        total_products=Count('products')
+    ).order_by('-total_products')[:12]
+    
     return render(request, 'products/list.html', {
         'categories_with_products': categories_with_products,
+        'popular_categories': popular_categories,
     })  
 
 def product_detail(request, slug):
