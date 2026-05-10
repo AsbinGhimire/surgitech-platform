@@ -44,7 +44,7 @@ body {
 .btn-primary {
     background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
     color: var(--white);
-    padding: 0.8rem 2.5rem;
+    padding: 0.5rem 2.5rem;
     text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
@@ -60,4 +60,17 @@ body {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
+}
+
+.pill-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(2, 132, 199, 0.1);
+    color: var(--secondary-color);
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
 }

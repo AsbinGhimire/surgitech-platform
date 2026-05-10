@@ -1,0 +1,55 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Contact Messages — Surgitech Dashboard{% endblock %}
+{% block nav_msg %}active{% endblock %}
+{% block topbar_title %}Inquiries & Messages{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Contact Messages</h1>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Subject</th>
+          <th>Contact Info</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in messages_list %}
+        <tr>
+          <td style="white-space:nowrap;color:var(--muted);font-size:12px;">{{ m.created_at|date:"M d, Y H:i" }}</td>
+          <td style="font-weight:600;">{{ m.name }}</td>
+          <td>
+            <div style="font-weight:500;">{{ m.subject }}</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;max-width:400px;line-height:1.4;">{{ m.message|truncatechars:100 }}</div>
+          </td>
+          <td>
+            <div style="font-size:13px;">{{ m.email }}</div>
+            {% if m.phone %}<div style="font-size:12px;color:var(--muted);">{{ m.phone }}</div>{% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:8px;">
+               <button class="btn btn-ghost btn-sm" onclick="alert('Full Message:\n\n{{ m.message|escapejs }}')">View</button>
+               <a href="{% url 'dashboard:contact_message_delete' m.pk %}" class="btn btn-danger-outline btn-sm">Delete</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;padding:40px;color:var(--muted);">
+            <i class="fa-solid fa-inbox" style="font-size:32px;display:block;margin-bottom:12px;opacity:.3;"></i>
+            No messages yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -189,14 +189,7 @@
     z-index: 2;
 }
 
-.badge-discount {
-    background-color: #f43f5e;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    font-weight: 700;
-}
+
 
 .badge-special {
     background-color: #10b981;
@@ -279,33 +272,44 @@
     font-size: 1.05rem;
 }
 
-.old-price {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    text-decoration: line-through;
-    font-weight: 400;
-    margin-left: 2px;
-}
+
 
 .btn-add-cart {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     width: 100%;
-    color: var(--primary-color);
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 0.4rem 0.5rem;
-    border-radius: 4px;
+    box-sizing: border-box;
+    color: #ffffff;
+    background: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    padding: 0.3rem 1.5rem;
+    border-radius: 8px;
     font-weight: 600;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
-    text-align: center;
+    font-size: 0.85rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    text-decoration: none !important;
+    margin-top: 0.2rem;
+}
+
+.btn-add-cart i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
 }
 
 .product-card:hover .btn-add-cart, .btn-add-cart:hover {
-    background: #0d6efd;
+    background: var(--primary-color);
     color: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
+    text-decoration: none !important;
+}
+
+.btn-add-cart:hover i {
+    transform: translateX(5px);
 }
 
 
@@ -448,7 +452,7 @@
 }
 
 .actions .btn-primary {
-    padding: 1.2rem 3rem;
+    padding: 0.8rem 3rem;
     font-size: 1.1rem;
     border-radius: 50px;
     display: inline-flex;
@@ -568,7 +572,7 @@
 .btn-outline-pill {
     border: 1px solid #dee2e6;
     color: #495057;
-    padding: 0.6rem 1.5rem;
+    padding: 0.3rem 1.5rem;
     border-radius: 4px;
     font-weight: 600;
     text-decoration: none;

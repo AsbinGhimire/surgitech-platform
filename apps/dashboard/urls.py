@@ -27,4 +27,8 @@ urlpatterns = [
     path('blog/posts/<int:pk>/edit/', views.blog_post_edit, name='blog_post_edit'),
     path('blog/posts/<int:pk>/delete/', views.blog_post_delete, name='blog_post_delete'),
 
+    # Contact Messages
+    path('messages/', views.contact_messages, name='contact_messages'),
+    path('messages/<int:pk>/delete/', views.contact_message_delete, name='contact_message_delete'),
+
 ]

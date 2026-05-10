@@ -30,7 +30,7 @@
             <h1>{{ product.name }}</h1>
             <p class="price-large">
                 {% if product.price %}
-                    ${{ product.price }}
+                    Rs.{{ product.price|floatformat:"0" }}
                 {% else %}
                     Contact for Pricing
                 {% endif %}

@@ -3,9 +3,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from products.models import Category, Product
 from blog.models import BlogPost
+from core.models import ContactMessage
 from .forms import CategoryForm, ProductForm, BlogPostForm, CategoryMergeForm
-
-
 
 
 # ─── Home ────────────────────────────────────────────────────────────────────
@@ -15,6 +14,7 @@ def dashboard_home(request):
     context = {
         'total_categories': Category.objects.count(),
         'total_products':   Product.objects.count(),
+        'total_messages':   ContactMessage.objects.count(),
         'recent_products':  Product.objects.select_related('category').order_by('-created_at')[:6],
         'categories':       Category.objects.all(),
     }
@@ -175,3 +175,21 @@ def blog_post_delete(request, pk):
         messages.success(request, 'Blog Post deleted.')
         return redirect('dashboard:blog_post_list')
     return render(request, 'dashboard/confirm_delete.html', {'obj': post, 'type': 'Blog Post'})
+
+
+# ─── Contact Messages ────────────────────────────────────────────────────────
+
+@staff_member_required(login_url='/admin/login/')
+def contact_messages(request):
+    messages_list = ContactMessage.objects.all()
+    return render(request, 'dashboard/contact_messages.html', {'messages_list': messages_list})
+
+
+@staff_member_required(login_url='/admin/login/')
+def contact_message_delete(request, pk):
+    message_obj = get_object_or_404(ContactMessage, pk=pk)
+    if request.method == 'POST':
+        message_obj.delete()
+        messages.success(request, 'Message deleted.')
+        return redirect('dashboard:contact_messages')
+    return render(request, 'dashboard/confirm_delete.html', {'obj': message_obj, 'type': 'Contact Message'})

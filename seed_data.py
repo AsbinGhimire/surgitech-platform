@@ -82,7 +82,6 @@ def seed_products():
                     'category': cat,
                     'brand': item['brand'],
                     'price': item['price'],
-                    'old_price': item['price'] * 1.2,
                     'description': item['description'],
                     'specifications': item['specs'],
                     'badge': item['badge'],

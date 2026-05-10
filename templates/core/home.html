@@ -4,7 +4,7 @@
 {% block title %}Home - Surgitech{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/product.css' %}">
+<link rel="stylesheet" href="{% static 'css/product.css' %}?v=1.4">
 {% endblock %}
 
 {% block content %}
@@ -82,8 +82,7 @@
                             {% if product.price %}Rs.{{ product.price|floatformat:"0" }}{% else %}Price on Request{% endif %}
                         </span>
                     </div>
-                    
-                    <button class="btn-add-cart">Add to Cart</button>
+                    <a href="{{ product.get_absolute_url }}" class="btn-add-cart">View Details <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
         {% empty %}

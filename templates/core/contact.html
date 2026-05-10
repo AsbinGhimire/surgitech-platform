@@ -1,10 +1,99 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Contact Us - Surgitech{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}?v=2.2">
+{% endblock %}
+
 {% block content %}
-<div class="page-container">
-    <h1>Contact Us</h1>
-    <p>Get in touch with our team.</p>
+<div class="page-container compact-mode">
+    <div class="stunning-contact-card">
+        <!-- Sidebar Info -->
+        <div class="contact-sidebar">
+            <div class="sidebar-header">
+                <span class="pill-badge">CONTACT</span>
+                <h2>Get in Touch</h2>
+                <p>Expert medical support is just a message away.</p>
+            </div>
+            
+            <div class="sidebar-links">
+                <div class="s-link">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <small>Call Us</small>
+                        <span>+977 1 4XXXXXX</span>
+                    </div>
+                </div>
+                <div class="s-link">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <small>Email Us</small>
+                        <span>info@surgitech.com.np</span>
+                    </div>
+                </div>
+                <div class="s-link">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div>
+                        <small>Visit Us</small>
+                        <span>Kathmandu, Nepal</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer-icons">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            </div>
+        </div>
+
+        <!-- Form Area -->
+        <div class="contact-form-area">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">
+                        <i class="fa-solid fa-check-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="sleek-form">
+                {% csrf_token %}
+                
+                <div class="field-group">
+                    <label>Full Name</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label>Email Address</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="field-group">
+                        <label>Phone Number</label>
+                        {{ form.phone }}
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label>Subject</label>
+                    {{ form.subject }}
+                </div>
+
+                <div class="field-group">
+                    <label>Message</label>
+                    {{ form.message }}
+                </div>
+
+                <button type="submit" class="btn-stunning">
+                    <span>Send Message</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
